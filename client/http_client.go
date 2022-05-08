@@ -13,8 +13,12 @@ import (
 
 func doReq(cli genericclient.Client) error {
 
+	userIds := []interface{}{"123"}
+	userIds = append(userIds, 456)
+
 	body := map[string]interface{}{
-		"text": "my test",
+		"text":     "my test",
+		"user_ids": userIds,
 	}
 	data, err := json.Marshal(body)
 	if err != nil {
@@ -22,6 +26,9 @@ func doReq(cli genericclient.Client) error {
 	}
 	url := "http://example.com/life/client/11?vint64=1&items=item0,item1,itme2"
 	req, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer(data))
+	klog.Infof("req=%v", req)
+	klog.Infof("req.Body=%v", req.Body)
+
 	if err != nil {
 		klog.Fatalf("new http request failed: %v", err)
 	}
