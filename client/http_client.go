@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/genericclient"
 	"github.com/cloudwego/kitex/pkg/generic"
@@ -24,6 +25,9 @@ func doReq(cli genericclient.Client) error {
 	if err != nil {
 		klog.Fatalf("body marshal failed: %v", err)
 	}
+	fmt.Println(data)
+	fmt.Println(string(data))
+
 	url := "http://example.com/life/client/11?vint64=1&items=item0,item1,itme2"
 	req, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer(data))
 	klog.Infof("req=%v", req)

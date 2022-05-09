@@ -4,6 +4,7 @@ namespace go http
 struct BizRequest {
     1: i64 vint64(api.query = 'vint64', api.vd = "$>0&&$<200")
     2: string text(api.body = 'text')
+    3: list<string> userIds(api.body = 'user_ids')
     // 3: i32 token(api.header = 'token')
     // 6: list<string> items(api.query = 'items')
     // 7: i32 version(api.path = 'version')

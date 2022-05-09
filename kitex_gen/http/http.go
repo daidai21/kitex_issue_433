@@ -10,8 +10,9 @@ import (
 )
 
 type BizRequest struct {
-	Vint64 int64  `thrift:"vint64,1" json:"vint64"`
-	Text   string `thrift:"text,2" json:"text"`
+	Vint64  int64    `thrift:"vint64,1" json:"vint64"`
+	Text    string   `thrift:"text,2" json:"text"`
+	UserIds []string `thrift:"userIds,3" json:"userIds"`
 }
 
 func NewBizRequest() *BizRequest {
@@ -25,16 +26,24 @@ func (p *BizRequest) GetVint64() (v int64) {
 func (p *BizRequest) GetText() (v string) {
 	return p.Text
 }
+
+func (p *BizRequest) GetUserIds() (v []string) {
+	return p.UserIds
+}
 func (p *BizRequest) SetVint64(val int64) {
 	p.Vint64 = val
 }
 func (p *BizRequest) SetText(val string) {
 	p.Text = val
 }
+func (p *BizRequest) SetUserIds(val []string) {
+	p.UserIds = val
+}
 
 var fieldIDToName_BizRequest = map[int16]string{
 	1: "vint64",
 	2: "text",
+	3: "userIds",
 }
 
 func (p *BizRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -69,6 +78,16 @@ func (p *BizRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 2:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -124,6 +143,28 @@ func (p *BizRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *BizRequest) ReadField3(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.UserIds = make([]string, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem string
+		if v, err := iprot.ReadString(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.UserIds = append(p.UserIds, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *BizRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("BizRequest"); err != nil {
@@ -136,6 +177,10 @@ func (p *BizRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -191,6 +236,31 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *BizRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("userIds", thrift.LIST, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRING, len(p.UserIds)); err != nil {
+		return err
+	}
+	for _, v := range p.UserIds {
+		if err := oprot.WriteString(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *BizRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -210,6 +280,9 @@ func (p *BizRequest) DeepEqual(ano *BizRequest) bool {
 	if !p.Field2DeepEqual(ano.Text) {
 		return false
 	}
+	if !p.Field3DeepEqual(ano.UserIds) {
+		return false
+	}
 	return true
 }
 
@@ -224,6 +297,19 @@ func (p *BizRequest) Field2DeepEqual(src string) bool {
 
 	if strings.Compare(p.Text, src) != 0 {
 		return false
+	}
+	return true
+}
+func (p *BizRequest) Field3DeepEqual(src []string) bool {
+
+	if len(p.UserIds) != len(src) {
+		return false
+	}
+	for i, v := range p.UserIds {
+		_src := src[i]
+		if strings.Compare(v, _src) != 0 {
+			return false
+		}
 	}
 	return true
 }
